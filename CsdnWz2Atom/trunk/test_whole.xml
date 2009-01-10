@@ -1,0 +1,110 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<feed xmlns='http://www.w3.org/2005/Atom'
+	xmlns:openSearch='http://a9.com/-/spec/opensearchrss/1.0/'>
+	<updated>2009-01-04T15:17:24.218Z</updated>
+	<title type='text'>test</title>
+	<link rel='self' type='application/atom+xml'
+		href='http://www.google.com/notebook/feeds/feeds/01919700011853405291/archive/BDRKWDAoQra3Zkeoj' />
+	<author>
+		<name>TonyWjd@gmail.com</name>
+		<email>TonyWjd@gmail.com</email>
+	</author>
+	<generator version='1.0' uri='http://www.google.com/notebook'>
+		Google Notebook
+	</generator>
+	<entry>
+		<id>SDRKWDAoQrq3Zkeoj</id>
+		<updated>2009-01-04T15:15:16.781Z</updated>
+		<category scheme='http://schemas.google.com/g/2005#kind'
+			term='http://schemas.google.com/notebook/2008/kind#section' />
+		<title type='text'></title>
+		<content type='text'></content>
+	</entry>
+	<entry>
+		<id>NDQGGDQoQ8YPckeoj</id>
+		<updated>2009-01-04T15:16:16.073Z</updated>
+		<category scheme='http://schemas.google.com/g/2005/label'
+			term='ii18n' />
+		<category scheme='http://schemas.google.com/g/2005#kind'
+			term='http://schemas.google.com/notebook/2008/kind#note' />
+		<category
+			scheme='http://schemas.google.com/notebook/gdata/2007/section'
+			term='SDRKWDAoQrq3Zkeoj' label='' />
+		<category scheme='http://schemas.google.com/g/2005/label'
+			term='python' />
+		<title type='text'>老问题：在Python中使用中文 - China Linux Forum</title>
+		<content type='html'>大家好。最近为在Python中使用中文的问题头疼了一阵</content>
+		<link rel='related' type='text/html'
+			href='http://www.linuxforum.net/forum/showthreaded.php?Cat=&amp;Board=python&amp;Number=495520&amp;page=&amp;view=&amp;sb=&amp;o='
+			title='老问题：在Python中使用中文 - China Linux Forum' />
+		<author>
+			<name>tonywjd@gmail.com</name>
+		</author>
+	</entry>
+	<entry>
+		<id>NDQ18DAoQxtfdkeoj</id>
+		<updated>2009-01-04T15:16:27.777Z</updated>
+		<category scheme='http://schemas.google.com/g/2005#kind'
+			term='http://schemas.google.com/notebook/2008/kind#note' />
+		<category
+			scheme='http://schemas.google.com/notebook/gdata/2007/section'
+			term='SDRKWDAoQrq3Zkeoj' label='' />
+		<title type='text'>
+			python 中文解决方法 gb2312 &lt;==&gt; utf8 - China Linux Forum
+		</title>
+		<content type='html'></content>
+		<link rel='related' type='text/html'
+			href='http://www.linuxforum.net/forum/gshowflat.php?Cat=&amp;Board=python&amp;Number=427317&amp;page=0&amp;view=collapsed&amp;sb=5&amp;o=all&amp;fpart='
+			title='python 中文解决方法 gb2312 &lt;==&gt; utf8 - China Linux Forum' />
+		<author>
+			<name>tonywjd@gmail.com</name>
+		</author>
+	</entry>
+	<entry>
+		<id>NDQ8rDAoQ5Mrekeoj</id>
+		<updated>2009-01-04T15:16:54.843Z</updated>
+		<category scheme='http://schemas.google.com/g/2005#kind'
+			term='http://schemas.google.com/notebook/2008/kind#note' />
+		<category
+			scheme='http://schemas.google.com/notebook/gdata/2007/section'
+			term='SDRKWDAoQrq3Zkeoj' label='' />
+		<title type='text'>
+			Nabble - python-chinese @ googlegroups - [CPyUG:75629]
+			[初学者请教]python抓网页的编码问题
+		</title>
+		<content type='html'>
+			&lt;span&gt; &lt;/span&gt;测试抓取多页帖子时,有些只能utf-8解码.
+		</content>
+		<link rel='related' type='text/html'
+			href='http://www.nabble.com/-CPyUG%3A75629---%E5%88%9D%E5%AD%A6%E8%80%85%E8%AF%B7%E6%95%99-python%E6%8A%93%E7%BD%91%E9%A1%B5%E7%9A%84%E7%BC%96%E7%A0%81%E9%97%AE%E9%A2%98-td21272649.html#a21273687'
+			title='Nabble - python-chinese @ googlegroups - [CPyUG:75629] [初学者请教]python抓网页的编码问题' />
+		<author>
+			<name>tonywjd@gmail.com</name>
+		</author>
+	</entry>
+	<entry>
+		<id>NDRFtDAoQ4_Hfkeoj</id>
+		<updated>2009-01-04T15:17:24.218Z</updated>
+		<category scheme='http://schemas.google.com/g/2005/label'
+			term='learn' />
+		<category scheme='http://schemas.google.com/g/2005#kind'
+			term='http://schemas.google.com/notebook/2008/kind#note' />
+		<category
+			scheme='http://schemas.google.com/notebook/gdata/2007/section'
+			term='SDRKWDAoQrq3Zkeoj' label='' />
+		<category scheme='http://schemas.google.com/g/2005/label'
+			term='regex' />
+		<category scheme='http://schemas.google.com/g/2005/label'
+			term='python' />
+		<title type='text'>
+			python正则表达式学习 - yzt4545454的专栏 - CSDNBlog
+		</title>
+		<content type='html'></content>
+		<link rel='related' type='text/html'
+			href='http://blog.csdn.net/yzt4545454/archive/2007/09/27/1803967.aspx'
+			title='python正则表达式学习 - yzt4545454的专栏 - CSDNBlog' />
+		<author>
+			<name>tonywjd@gmail.com</name>
+		</author>
+	</entry>
+</feed>
