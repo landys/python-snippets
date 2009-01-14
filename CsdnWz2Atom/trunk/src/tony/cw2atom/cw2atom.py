@@ -1,9 +1,13 @@
+#!/usr/bin/env python
+# coding=utf-8
+
 import sys
 import urllib2
 import re
 import os
 import Cheetah
 import atomFile
+import cvdt
 
 class WzNote:
     def __init__(self, tags, title, url, abstract, updateTime):
@@ -22,10 +26,22 @@ class Atom:
 
 class CsdnWz2Atom:
     csdnWzUrl = 'http://wz.csdn.net/%(user)s/null/%(page)d/'
+    message = 'Totally %(npages)d pages %(nnotes)d notes'
     pageEncoding = 'utf-8'
+    # "<div\\s+class='fl'>\\s*<h1>\\s*<a\\s+href='(.*?)'.*?>\\s*(.*?)\\s*<.*?<p\\s*class='silver'>\\s*<a.*?</a>(.*?)时间：\\s*(.*?)\\s*\\|.*?<p>\\s*(.*?)\\s*</p>"
+    regexWzNotes = "<div\\s+class='fl'>\\s*<h1>\\s*<a\\s+href='(?P<url>.*?)'.*?>\\s*(?P<title>.*?)\\s*<.*?<p\\s*class='silver'>\\s*<a.*?</a>(?P<tags>.*?)时间：\\s*(?P<rawtime>.*?)\\s*\\|.*?<p>\\s*(?P<abstract>.*?)\\s*</p>"
+    # "<a.*?>\\s*(.*?)\\s*</a>"
+    regexTags = "<a.*?>\\s*(?P<tag>.*?)\\s*</a>"
+    regexNextPage = "<a\\s+href='/\\S+/null/\\d+/'>\\s*下一页\\s*</a>"
     
-    def __init__(self, csdnUser, gmail, title):
+    roWzNotes = re.compile(regexWzNotes, re.DOTALL)
+    roTags = re.compile(regexTags, re.DOTALL)
+    roNextPage = re.compile(regexNextPage, re.DOTALL)
+    
+    def __init__(self, csdnUser, gmail, title, atomFileName):
         self.atom = Atom(csdnUser, gmail, title, [])
+        self.nNotes = 0
+        self.atomFileName = atomFileName
     
     def crawlCsdnWzPage(self, url):
         '''Read CSDN WZ from web through export url provided, return the contend string.'''
@@ -56,43 +72,52 @@ class CsdnWz2Atom:
     # return true if has next page.
     def parsePage(self, content):
         '''Parse page with regular expression matcher. Return the result list.'''
-        ro = re.compile(csdnWzRegex, re.DOTALL)
-        notes = []
-        for mo in ro.finditer(page):
-            mo.group('tags')
-            notes.append(WzNote(mo.group('tags'), mo.group('title'), mo.group('url'), mo.group('abstract')))
-        return notes
+        notes = self.atom.wzNotes
+        for mo in CsdnWz2Atom.roWzNotes.finditer(content):
+            tags = []
+            for moT in CsdnWz2Atom.roTags.finditer(mo.group('tags')):
+                tags.append(moT.group('tag'))
+            notes.append(WzNote(tags, mo.group('title'), mo.group('url'), mo.group('abstract'), cvdt.convert_datetime(dt=mo.group('rawtime'), tz='UTC', dest_fmt='%Y-%m-%dT%H:%M:%S.000Z')))
+            self.nNotes += 1
+            
+        return CsdnWz2Atom.roNextPage.search(content) != None
     
+    def printAtom(self, atomContent):
+        atomFile = open(self.atomFileName, "w")
+        atomFile.write(atomContent)
+        atomFile.close()
+    
+    # return the message about the situation
     def go(self):
         '''Run to crawl, parse CSDN WZ, and generate atom xml file.'''
-        # read page
-        #page = crawlCsdnWzPage(self, csdnWzExportUrl)
-        #page = readCsdnWzFile(self, 'E:\\temp\\tonywz.html')
         
-        # parse page
-        #notes = parsePage(page)
+        hasNext = True
+        nPages = 0
+        while hasNext:
+            # read page
+            nPages += 1
+            content = self.crawlCsdnWzPage(CsdnWz2Atom.csdnWzUrl %{'user':self.atom.csdnUser, 'page':nPages})
+            #page = readCsdnWzFile(self, 'E:\\temp\\tonywz.html')
         
-        #count = 0
-        #for note in notes:
-        #    print '%s\n%s\n%s\n%s\n' %(note.tags, note.title, note.url, note.abstract)
-        #    count += 1
-        #    if count == 10:
-        #        break
-        notes = self.atom.wzNotes
-        notes.append(WzNote(['a', 'b'], 'abcd', 'http://www.google.com', 'hello world', 'aaaaa'))
-        notes.append(WzNote(['a1', 'b1'], 'abcd1', 'http://www.google.com1', 'hello world1', 'aaaaa1'))
-        notes.append(WzNote(['a2', 'b2'], 'abcd2', 'http://www.google.com2', 'hello world2', 'aaaaa2'))
-        print atomFile.atomFile(searchList=[{'atom' : self.atom}])
+            # parse page
+            hasNext = self.parsePage(content)
+            print "Page %d finished." %(nPages),
+            if (hasNext):
+                print "Begin to crawl page %d..." %(nPages + 1)
+        print        
+        self.printAtom(atomFile.atomFile(searchList=[{'atom' : self.atom}]).__str__())
+        
+        return CsdnWz2Atom.message %{'npages' : nPages, 'nnotes' : self.nNotes}
 # main
 if __name__ == '__main__':
-    if len(sys.argv) < 4:
+    if len(sys.argv) < 5:
         prog = os.path.basename(sys.argv[0])
-        print "usage: python %s csdn-username gmail notebook-title" %(prog)
-        print "eg. python %s tonywjd tonywjd@gmail.com \"csdn bookmarks\"" %(prog)
+        print "usage: python %s csdn-username gmail notebook-title result-atom-xml" %(prog)
+        print "eg. python %s tonywjd tonywjd@gmail.com \"csdn bookmarks\" \"c:\\tonywjd-atom.xml\"" %(prog)
         sys.exit()
 
     print 'Begin generate atom xml from CSDN WZs...'
 
-    CsdnWz2Atom(sys.argv[1], sys.argv[2], sys.argv[3]).go()
+    print CsdnWz2Atom(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4]).go()
 
     print 'End successfully.'
