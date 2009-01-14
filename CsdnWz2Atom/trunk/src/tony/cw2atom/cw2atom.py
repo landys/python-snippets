@@ -77,7 +77,10 @@ class CsdnWz2Atom:
             tags = []
             for moT in CsdnWz2Atom.roTags.finditer(mo.group('tags')):
                 tags.append(moT.group('tag'))
-            notes.append(WzNote(tags, mo.group('title'), mo.group('url'), mo.group('abstract'), cvdt.convert_datetime(dt=mo.group('rawtime'), tz='UTC', dest_fmt='%Y-%m-%dT%H:%M:%S.000Z')))
+            tAbs = mo.group('abstract').replace('&', '&amp;amp;').replace('<', '&amp;lt;').replace('>', '&amp;gt;').replace('"', '&amp;quot;').replace('\'', '&amp;#39;')
+            tTitle = mo.group('title').replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;').replace('"', '&quot;').replace('\'', '&apos;')
+            tTime = cvdt.convert_datetime(dt=mo.group('rawtime'), tz='UTC', dest_fmt='%Y-%m-%dT%H:%M:%S.000Z')
+            notes.append(WzNote(tags, tTitle, mo.group('url'), tAbs, tTime))
             self.nNotes += 1
             
         return CsdnWz2Atom.roNextPage.search(content) != None
