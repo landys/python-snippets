@@ -1,5 +1,8 @@
 #!/usr/bin/env python
 # coding=utf-8
+# the url cannot have "%" in the url, so the "%u" will be eliminated, and
+# the correct url will be in the front of the abstract.
+# i.e. http://www.i918.cn/200709/20070920.html?stra=%u6797%u632F%u5B87=%u7A0B%u7EA2%u82F1
 
 import sys
 import urllib2
@@ -26,7 +29,7 @@ class Atom:
 
 class CsdnWz2Atom:
     csdnWzUrl = 'http://wz.csdn.net/%(user)s/null/%(page)d/'
-    message = 'Totally %(npages)d pages %(nnotes)d notes'
+    message = 'Totally %(nPages)d pages %(nNotes)d notes %(nWarnNotes)d warning notes'
     pageEncoding = 'utf-8'
     # "<div\\s+class='fl'>\\s*<h1>\\s*<a\\s+href='(.*?)'.*?>\\s*(.*?)\\s*<.*?<p\\s*class='silver'>\\s*<a.*?</a>(.*?)时间：\\s*(.*?)\\s*\\|.*?<p>\\s*(.*?)\\s*</p>"
     regexWzNotes = "<div\\s+class='fl'>\\s*<h1>\\s*<a\\s+href='(?P<url>.*?)'.*?>\\s*(?P<title>.*?)\\s*<.*?<p\\s*class='silver'>\\s*<a.*?</a>(?P<tags>.*?)时间：\\s*(?P<rawtime>.*?)\\s*\\|.*?<p>\\s*(?P<abstract>.*?)\\s*</p>"
@@ -40,8 +43,9 @@ class CsdnWz2Atom:
     
     def __init__(self, csdnUser, gmail, title, atomFileName):
         self.atom = Atom(csdnUser, gmail, title, [])
-        self.nNotes = 0
         self.atomFileName = atomFileName
+        self.nNotes = 0
+        self.nWarnNotes = 0
     
     def crawlCsdnWzPage(self, url):
         '''Read CSDN WZ from web through export url provided, return the contend string.'''
@@ -77,10 +81,22 @@ class CsdnWz2Atom:
             tags = []
             for moT in CsdnWz2Atom.roTags.finditer(mo.group('tags')):
                 tags.append(moT.group('tag'))
-            tAbs = mo.group('abstract').replace('&', '&amp;amp;').replace('<', '&amp;lt;').replace('>', '&amp;gt;').replace('"', '&amp;quot;').replace('\'', '&amp;#39;')
+            rawUrl = mo.group('url')
+            rawAbs = mo.group('abstract')
+            # google notebook not allow '%u' in the url, so it will be eliminated
+            # and the url will not work as well.
+            # i.e. http://www.i918.cn/200709/20070920.html?stra=%u6797%u632F%u5B87=%u7A0B%u7EA2%u82F1
+            if rawUrl.find('%u') != -1 or rawUrl.find('%U') != -1:
+                rawAbs = rawUrl + '<br><br>' + rawAbs
+                print 'waring: problem url: ' + rawUrl
+                rawUrl = rawUrl.replace('%u', '').replace('%U', '')
+                self.nWarnNotes += 1
+            
+            tAbs = rawAbs.replace('&', '&amp;amp;').replace('<br>', '&lt;br&gt;').replace('<', '&amp;lt;').replace('>', '&amp;gt;').replace('"', '&amp;quot;').replace('\'', '&amp;#39;')
             tTitle = mo.group('title').replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;').replace('"', '&quot;').replace('\'', '&apos;')
+            tUrl = rawUrl.replace(' ', '%20').replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;').replace('"', '&quot;').replace('\'', '&apos;')
             tTime = cvdt.convert_datetime(dt=mo.group('rawtime'), tz='UTC', dest_fmt='%Y-%m-%dT%H:%M:%S.000Z')
-            notes.append(WzNote(tags, tTitle, mo.group('url'), tAbs, tTime))
+            notes.append(WzNote(tags, tTitle, tUrl, tAbs, tTime))
             self.nNotes += 1
             
         return CsdnWz2Atom.roNextPage.search(content) != None
@@ -110,7 +126,7 @@ class CsdnWz2Atom:
         print        
         self.printAtom(atomFile.atomFile(searchList=[{'atom' : self.atom}]).__str__())
         
-        return CsdnWz2Atom.message %{'npages' : nPages, 'nnotes' : self.nNotes}
+        return CsdnWz2Atom.message %{'nPages' : nPages, 'nNotes' : self.nNotes, 'nWarnNotes' : self.nWarnNotes}
 # main
 if __name__ == '__main__':
     if len(sys.argv) < 5:
