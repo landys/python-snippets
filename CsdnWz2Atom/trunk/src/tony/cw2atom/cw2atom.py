@@ -1,8 +1,5 @@
 #!/usr/bin/env python
 # coding=utf-8
-# the url cannot have "%" in the url, so the "%u" will be eliminated, and
-# the correct url will be in the front of the abstract.
-# i.e. http://www.i918.cn/200709/20070920.html?stra=%u6797%u632F%u5B87=%u7A0B%u7EA2%u82F1
 
 import sys
 import urllib2
@@ -29,7 +26,7 @@ class Atom:
 
 class CsdnWz2Atom:
     csdnWzUrl = 'http://wz.csdn.net/%(user)s/null/%(page)d/'
-    message = 'Totally %(nPages)d pages %(nNotes)d notes %(nWarnNotes)d warning notes'
+    message = 'Totally %(nPages)d pages, %(nNotes)d notes, including %(nWarnNotes)d warning notes.'
     pageEncoding = 'utf-8'
     # "<div\\s+class='fl'>\\s*<h1>\\s*<a\\s+href='(.*?)'.*?>\\s*(.*?)\\s*<.*?<p\\s*class='silver'>\\s*<a.*?</a>(.*?)时间：\\s*(.*?)\\s*\\|.*?<p>\\s*(.*?)\\s*</p>"
     regexWzNotes = "<div\\s+class='fl'>\\s*<h1>\\s*<a\\s+href='(?P<url>.*?)'.*?>\\s*(?P<title>.*?)\\s*<.*?<p\\s*class='silver'>\\s*<a.*?</a>(?P<tags>.*?)时间：\\s*(?P<rawtime>.*?)\\s*\\|.*?<p>\\s*(?P<abstract>.*?)\\s*</p>"
