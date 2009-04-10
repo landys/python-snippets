@@ -10,4 +10,4 @@ setup.py是py2exe生成单个exe文件的脚本, 生成之后的exe有3.37M.
 直接执行python setup.py py2exe生成.
 
 程序在Windows XP x86上执行通过. eclipse 3.3.2上使用Pydev插件开发.
-使用的第三方python库中Cheetah-2.0.1, pytz 2008i.
+Python 2.5.2. 使用的第三方python库中Cheetah-2.0.1, pytz 2008i.
